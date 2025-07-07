@@ -193,5 +193,89 @@ SET SESSION innodb_wait_timeout = 120; -- 120 seconds
 
 -- now lets turn student_id INT into
 -- student_id INT AUTO_INCREMENT
+ALTER TABLE student
+MODIFY COLUMN student_id INT AUTO_INCREMENT,
+ALGORITHM=COPY,
+LOCK=SHARED;
+
+/*
+#1846 - ALGORITHM=INPLACE is not supported. Reason: 
+Cannot change column type INPLACE. 
+Try ALGORITHM=COPY.
+
+#1846 - LOCK=NONE is not supported. Reason: 
+COPY algorithm requires a lock. Try 
+LOCK=SHARED.
+*/
 
 -- 1:48:12
+---------------------------------------------------
+-- UPDATE & DELETE
+
+UPDATE student
+SET major = 'Bio'
+WHERE major = 'Biology';
+
+/*
+    OTHER COMPARISON OPS:
+    = EQUALS
+    <> NOT EQUALS
+    > GREATER THAN
+    < LESS THAN
+    >= GREATER THAN OR EQUAL
+    <= LESS THAN OR EQUAL
+*/
+
+SELECT * FROM student;
+
+UPDATE student 
+SET major = 'CompSci'
+WHERE major = 'comp sci';
+
+-------------------------------
+SELECT * FROM student;
+
+UPDATE student
+SET major = 'Biochemistry'
+WHERE major = 'Bio' OR major = NULL;
+
+----------------------------------
+-- DELETE
+
+SELECT * FROM student;
+
+DELETE FROM student
+WHERE student_id = 5;
+
+-- 2:00:30
+
+/*
+    what does this do?
+    selects ONLY the columns NAME and major 
+    from the student table, and then retrieves
+    all matches from these two columns ordered
+    by name, in a descending order (A-Z)
+    and only returns 2 matches back
+*/
+
+SELECT student.name, student.major
+FROM student
+ORDER BY NAME DESC
+LIMIT 2;
+
+-- generic sorting
+SELECT *
+FROM student 
+WHERE major = 'Biology' OR 'compsci';
+
+-- another example
+
+SELECT *
+FROM student 
+WHERE major IN ('Biology', 'compsci', 'Sociology');
+-----
+SELECT *t
+FROM student
+WHERE major IN ('Sociology', 'compsci') AND student_id > 2;
+
+
